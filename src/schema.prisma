@@ -1,0 +1,1 @@
+CREATE TABLE users (id uuid PRIMARY KEY, email text, username text, created_at timestamptz DEFAULT now()); CREATE TABLE games (id uuid PRIMARY KEY, letter text, categories jsonb, status text, created_at timestamptz DEFAULT now()); CREATE TABLE game_players (id uuid PRIMARY KEY, game_id uuid REFERENCES games(id), user_id uuid REFERENCES users(id), score integer, answers jsonb);
