@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityCountryHebrew - לוח בקרה</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #388E3C;
+            --primary-light: #C8E6C9;
+            --bg-dark: #121212;
+            --bg-card: #1E1E1E;
+            --bg-sidebar: #171717;
+            --text-primary: #E0E0E0;
+            --text-secondary: #9E9E9E;
+            --border: #333;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+            --info: #2196F3;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            direction: rtl;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--bg-sidebar);
+            padding: 24px 0;
+            height: 100vh;
+            position: fixed;
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            padding: 0 24px 32px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .logo span {
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-links li {
+            margin-bottom: 8px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 16px 24px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            border-right: 4px solid transparent;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: var(--primary);
+            border-right-color: var(--primary);
+        }
+
+        .nav-links i {
+            margin-left: 12px;
+            font-size: 1.2rem;
+        }
+
+        .sidebar-footer {
+            padding: 24px;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-right: 250px;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 32px;
+        }
+
+        .header-left h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .header-left p {
+            color: var(--text-secondary);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .upgrade-badge {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .upgrade-badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .notifications {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .notifications .badge {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--info));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Stats Cards */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .card-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .card-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-change {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .card-change.positive {
+            color: var(--success);
+        }
+
+        .card-change.negative {
+            color: var(--danger);
+        }
+
+        /* Chart & Activity */
+        .chart-activity {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        @media (max-width: 1100px) {
+            .chart-activity {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container,
+        .activity-container {
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .activity-icon.game {
+            background-color: var(--primary);
+        }
+
+        .activity-icon.win {
+            background-color: var(--success);
+        }
+
+        .activity-icon.friend {
+            background-color: var(--info);
+        }
+
+        .activity-details h4 {
+            margin-bottom: 4px;
+        }
+
+        .activity-details p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .activity-time {
+            margin-right: auto;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        /* Recent Games */
+        .recent-games {
+            background-color: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .games-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .games-table th {
+            text-align: right;
+            padding: 16px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .games-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .games-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .player-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .player-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-won {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: var(--success);
+        }
+
+        .status-lost {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--danger);
+        }
+
+        .status-ongoing {
+            background-color: rgba(33, 150, 243, 0.2);
+            color: var(--info);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 0;
+            }
+
+            .logo span,
+            .nav-links span,
+            .sidebar-footer {
+                display: none;
+            }
+
+            .nav-links a {
+                justify-content: center;
+                padding: 20px 0;
+                border-right: none;
+                border-left: 4px solid transparent;
+            }
+
+            .nav-links a:hover,
+            .nav-links a.active {
+                border-right-color: transparent;
+                border-left-color: var(--primary);
+            }
+
+            .nav-links i {
+                margin-left: 0;
+                font-size: 1.4rem;
+            }
+
+            .main-content {
+                margin-right: 70px;
+                padding: 16px;
+            }
+
+            .header-left h1 {
+                font-size: 1.5rem;
+            }
+
+            .upgrade-badge {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="logo">City<span>Country</span>Hebrew</div>
+        <ul class="nav-links">
+            <li><a href="#" class="active"><i>📊</i> <span>לוח בקרה</span></a></li>
+            <li><a href="#"><i>🎮</i> <span>חדרי משחק</span></a></li>
+            <li><a href="#"><i>🏆</i> <span>טבלת שיאים</span></a></li>
+            <li><a href="#"><i>📈</i> <span>אנליטיקה</span></a></li>
+            <li><a href="#"><i>⚙️</i> <span>הגדרות</span></a></li>
+        </ul>
+        <div class="sidebar-footer">© 2023 CityCountryHebrew</div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>שלום, דוד!</h1>
+                <p>הנה סקירה של הביצועים והפעילות האחרונה שלך</p>
+            </div>
+            <div class="header-right">
+                <div class="upgrade-badge">שדרג ל-Pro 🚀</div>
+                <div class="notifications">
+                    <i>🔔</i>
+                    <div class="badge">3</div>
+                </div>
+                <div class="user-avatar">ד</div>
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <section class="stats-cards">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">משחקים שהושלמו</h3>
+                    <div class="card-icon">🎯</div>
+                </div>
+                <div class="card-value">1,247</div>
+                <div class="card-change positive">↑ 12% מהחודש שעבר</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">ניצחונות</h3>
+                    <div class="card-icon">🏆</div>
+                </div>
+                <div class="card-value">843</div>
+                <div class="card-change positive">↑ 8% מהחודש שעבר</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">ניקוד ממוצע</h3>
+                    <div class="card-icon">⭐</div>
+                </div>
+                <div class="card-value">1,850</div>
+                <div class="card-change positive">↑ 5% מהחודש שעבר</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">דירוג עולמי</h3>
+                    <div class="card-icon">🌍</div>
+                </div>
+                <div class="card-value">#42</div>
+                <div class="card-change negative">↓ 2 מקומות</div>
+            </div>
+        </section>
+
+        <!-- Chart & Activity -->
+        <section class="chart-activity">
+            <div class="chart-container">
+                <h2 class="section-title"><i>📈</i> פעילות שבועית</h2>
+                <canvas id="activityChart"></canvas>
+            </div>
+            <div class="activity-container">
+                <h2 class="section-title"><i>🕒</i> פעילות אחרונה</h2>
+                <ul class="activity-list">
+                    <li class="activity-item">
+                        <div class="activity-icon game">🎮</div>
+                        <div class="activity-details">
+                            <h4>התחלת משחק חדש</h4>
+                            <p>חדר 'מאסטרים', אות: ב'</p>
+                        </div>
+                        <div class="activity-time">לפני 10 דקות</div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon win">🏆</div>
+                        <div class="activity-details">
+                            <h4>ניצחון במשחק</h4>
+                            <p>ניצחת את תמר עם 245 נקודות</p>
+                        </div>
+                        <div class="activity-time">לפני שעה</div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon friend">👥</div>
+                        <div class="activity-details">
+                            <h4>חבר חדש התווסף</h4>
+                            <p>עידן הצטרף לרשימת החברים שלך</p>
+                        </div>
+                        <div class="activity-time">לפני 3 שעות</div>
+                    </li>
+                    <li class="activity-item">
+                        <div class="activity-icon game">🎯</div>
+                        <div class="activity-details">
+                            <h4>שיא אישי</h4>
+                            <p>שפרת את הניקוד הגבוה ביותר שלך ל-2,150</p>
+                        </div>
+                        <div class="activity-time">אתמול</div>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Recent Games Table -->
+        <section class="recent-games">
+            <h2 class="section-title"><i>🎲</i> משחקים אחרונים</h2>
+            <table class="games-table">
+                <thead>
+                    <tr>
+                        <th>חדר משחק</th>
+                        <th>שחקנים</th>
+                        <th>אות</th>
+                        <th>ניקוד</th>
+                        <th>סטטוס</th>
+                        <th>תאריך</th>
+                    </tr>
+                </thead>
+                <tbody id="gamesTableBody">
+                    <!-- Filled by JavaScript -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        // Auth Check
+        if (!localStorage.getItem('authToken')) {
+            window.location.href = 'auth.html';
+        }
+
+        // Mock Data
+        const mockGames = [
+            { room: 'מאסטרים', players: ['דוד', 'תמר', 'יוסי'], letter: 'ב', score: 245, status: 'won', date: '2023-10-05' },
+            { room: 'מהירים', players: ['דוד', 'רוני', 'מיכל'], letter: 'ש', score: 189, status: 'lost', date: '2023-10-04' },
+            { room: 'חברים', players: ['דוד', 'עידן', 'ליאל'], letter: 'מ', score: 210, status: 'won', date: '2023-10-03' },
+            { room: 'קלאסי', players: ['דוד', 'אריאל', 'נעמה'], letter: 'ת', score: 175, status: 'ongoing', date: '2023-10-02' },
+            { room: 'תחרותי', players: ['דוד', 'איתי', 'שרה'], letter: 'פ', score: 198, status: 'won', date: '2023-10-01' }
+        ];
+
+        const weeklyData = {
+            labels: ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'],
+            games: [12, 19, 8, 15, 14, 22, 10],
+            wins: [8, 12, 5, 10, 9, 15, 7],
+            score: [1560, 1890, 1240, 1780, 1650, 2150, 1420]
+        };
+
+        // DOM Ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Populate Games Table
+            const tableBody = document.getElementById('gamesTableBody');
+            mockGames.forEach(game => {
+                const row = document.createElement('tr');
+                const playersHtml = game.players.map(p => `
+                    <div class="player-cell">
+                        <div class="player-avatar">${p.charAt(0)}</div>
+                        <span>${p}</span>
+                    </div>
+                `).join('');
+                
+                let statusClass = '';
+                let statusText = '';
+                switch(game.status) {
+                    case 'won': statusClass = 'status-won'; statusText = 'ניצחון'; break;
+                    case 'lost': statusClass = 'status-lost'; statusText = 'הפסד'; break;
+                    case 'ongoing': statusClass = 'status-ongoing'; statusText = 'מתמשך'; break;
+                }
+
+                row.innerHTML = `
+                    <td>${game.room}</td>
+                    <td>${playersHtml}</td>
+                    <td><strong>${game.letter}</strong></td>
+                    <td>${game.score}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${game.date}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            // Initialize Chart
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: weeklyData.labels,
+                    datasets: [
+                        {
+                            label: 'משחקים',
+                            data: weeklyData.games,
+                            borderColor: '#4CAF50',
+                            backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'ניצחונות',
+                            data: weeklyData.wins,
+                            borderColor: '#2196F3',
+                            backgroundColor: 'rgba(33, 150, 243, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            rtl: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value;
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+
+            // Notifications Bell Click
+            document.querySelector('.notifications').addEventListener('click', function() {
+                alert('יש לך 3 התראות חדשות:\n1. תורך במשחק "מאסטרים"\n2. עידן הגיב לציון שלך\n3. אירוע שבועי מתחיל מחר!');
+                this.querySelector('.badge').style.display = 'none';
+            });
+
+            // Upgrade Badge Click
+            document.querySelector('.upgrade-badge').addEventListener('click', function() {
+                const confirmUpgrade = confirm('שדרוג ל-Pro יפתח בפניך:\n✅ חדרים פרטיים ללא הגבלה\n✅ סטטיסטיקות מתקדמות\n✅ ערכות אותיות מותאמות אישית\n✅ הסרת פרסומות\n\nמחיר: 29.90₪ לחודש\nלהמשיך?');
+                if (confirmUpgrade) {
+                    alert('תודה! אתה מועבר לדף התשלום.');
+                }
+            });
+
+            // User Avatar Click
+            document.querySelector('.user-avatar').addEventListener('click', function() {
+                alert('פרופיל משתמש:\nשם: דוד לוי\nדירוג: מאסטר (#42)\nניקוד כללי: 124,750\nחברים: 28\nמשחק פעיל: חדר "מאסטרים"');
+            });
+        });
+    </script>
+</body>
+</html>
