@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityCountryHebrew | Premium Hebrew Word Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #388E3C;
+            --text-light: #f0f0f0;
+            --text-muted: #b0b0b0;
+            --bg-dark: #0a0e17;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(76, 175, 80, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(32, 101, 209, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 80%, rgba(156, 39, 176, 0.05) 0%, transparent 50%);
+            z-index: -2;
+            animation: gradientShift 20s ease-in-out infinite alternate;
+        }
+        @keyframes gradientShift {
+            0% { transform: translate(0%, 0%) rotate(0deg); }
+            100% { transform: translate(2%, 2%) rotate(1deg); }
+        }
+        .glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        /* Header & Navigation */
+        header {
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 14, 23, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-light);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo span {
+            color: var(--primary);
+        }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: var(--text-light);
+        }
+        .btn {
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
+        }
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--primary);
+        }
+        /* Hero Section */
+        .hero {
+            padding: 100px 0 120px;
+            text-align: center;
+            position: relative;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            background: linear-gradient(90deg, var(--text-light), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero .tagline {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        .value-prop {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 0 12px 12px 0;
+            max-width: 600px;
+            margin: 40px auto;
+            text-align: left;
+            line-height: 1.7;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        /* Features */
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 60px;
+            color: var(--text-light);
+        }
+        .features {
+            padding: 100px 0;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .feature-card {
+            padding: 40px 30px;
+            transition: transform 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+            font-size: 32px;
+        }
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-light);
+        }
+        .feature-desc {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        /* Social Proof */
+        .social-proof {
+            padding: 100px 0;
+        }
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        .testimonial-card {
+            padding: 30px;
+        }
+        .testimonial-text {
+            font-style: italic;
+            line-height: 1.7;
+            margin-bottom: 24px;
+            color: var(--text-light);
+        }
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+        }
+        .author-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .author-info p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .logo-cloud {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap;
+            padding: 40px;
+        }
+        .logo-item {
+            color: var(--text-muted);
+            font-size: 1.8rem;
+            font-weight: 700;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .logo-item:hover {
+            opacity: 1;
+        }
+        /* Pricing */
+        .pricing {
+            padding: 100px 0;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        .pricing-card {
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+        }
+        .pricing-card.featured {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+        .pricing-header {
+            margin-bottom: 30px;
+        }
+        .pricing-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+        .pricing-period {
+            color: var(--text-muted);
+        }
+        .pricing-features {
+            list-style: none;
+            flex-grow: 1;
+            margin-bottom: 40px;
+        }
+        .pricing-features li {
+            padding: 10px 0;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pricing-features li::before {
+            content: '✓';
+            color: var(--primary);
+            font-weight: bold;
+        }
+        /* Footer */
+        footer {
+            padding: 60px 0 30px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 60px;
+        }
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .footer-links {
+            display: flex;
+            gap: 30px;
+        }
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer-links a:hover {
+            color: var(--text-light);
+        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .nav-links {
+                display: none;
+            }
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .pricing-card.featured {
+                transform: none;
+            }
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="#" class="logo">City<span>Country</span>Hebrew</a>
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#testimonials">Testimonials</a>
+                <a href="#pricing">Pricing</a>
+                <a href="auth.html" class="btn btn-outline">Sign In</a>
+                <a href="auth.html" class="btn btn-primary">Get Started Free</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Master Hebrew with Every Turn</h1>
+                <p class="tagline">The digital evolution of Israel's beloved word game 'Eretz Ir'. Challenge friends, expand your vocabulary, and climb the leaderboards in real-time.</p>
+                <div class="value-prop">
+                    <strong>Why CityCountryHebrew?</strong> We combine the nostalgic fun of the classic pen-and-paper game with cutting-edge technology. Our intelligent Hebrew validation engine ensures fair play, while real-time multiplayer rooms bring communities together. Perfect for Hebrew learners, natives, and competitive word game enthusiasts.
+                </div>
+                <div class="cta-buttons">
+                    <a href="auth.html" class="btn btn-primary" style="padding: 16px 40px; font-size: 1.1rem;">Play Free Forever</a>
+                    <a href="#pricing" class="btn btn-outline" style="padding: 16px 40px; font-size: 1.1rem;">View Premium Plans</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2 class="section-title">Game-Changing Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card glass">
+                        <div class="feature-icon">🎮</div>
+                        <h3 class="feature-title">Real-Time Multiplayer</h3>
+                        <p class="feature-desc">Create or join game rooms instantly. Play with friends or match with players worldwide. Live chat and turn notifications keep the action flowing.</p>
+                    </div>
+                    <div class="feature-card glass">
+                        <div class="feature-icon">📝</div>
+                        <h3 class="feature-title">Hebrew Intelligence</h3>
+                        <p class="feature-desc">Advanced validation for proper nouns, modern slang, and historical terms. Our scoring system rewards creativity and linguistic knowledge.</p>
+                    </div>
+                    <div class="feature-card glass">
+                        <div class="feature-icon">⏱️</div>
+                        <h3 class="feature-title">Dynamic Gameplay</h3>
+                        <p class="feature-desc">Customizable timers, multiple categories, and special challenge rounds. Perfect for quick 5-minute games or epic evening sessions.</p>
+                    </div>
+                    <div class="feature-card glass">
+                        <div class="feature-icon">🏆</div>
+                        <h3 class="feature-title">Competitive Leaderboards</h3>
+                        <p class="feature-desc">Track your stats, earn badges, and climb seasonal rankings. Compare performance across categories and become a Hebrew word champion.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonials" class="social-proof">
+            <div class="container">
+                <h2 class="section-title">Loved by Hebrew Enthusiasts</h2>
+                <div class="testimonials">
+                    <div class="testimonial-card glass">
+                        <p class="testimonial-text">"As a Hebrew teacher, I've been searching for engaging tools. CityCountryHebrew is a game-changer! My students are obsessed and their vocabulary has improved dramatically."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">TD</div>
+                            <div class="author-info">
+                                <h4>Tal David</h4>
+                                <p>Hebrew Teacher, Tel Aviv</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card glass">
+                        <p class="testimonial-text">"The real-time multiplayer is flawless. Playing with my cousins abroad feels like we're in the same room. It's our weekly family ritual now!"</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">ML</div>
+                            <div class="author-info">
+                                <h4>Maya Levi</h4>
+                                <p>Marketing Director, New York</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card glass">
+                        <p class="testimonial-text">"Finally, a digital version that does justice to the classic game. The Hebrew validation is impressively accurate, and the competitive elements keep me coming back."</p>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">RS</div>
+                            <div class="author-info">
+                                <h4>Ronen Shavit</h4>
+                                <p>Software Engineer, Haifa</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="logo-cloud glass">
+                    <div class="logo-item">Ulpan</div>
+                    <div class="logo-item">Mako</div>
+                    <div class="logo-item">HebrewU</div>
+                    <div class="logo-item">Israel21c</div>
+                    <div class="logo-item">TLV Times</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing" class="pricing">
+            <div class="container">
+                <h2 class="section-title">Simple, Transparent Pricing</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card glass">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Free</h3>
+                            <div class="pricing-price">$0</div>
+                            <p class="pricing-period">Forever free</p>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>Basic Hebrew validation</li>
+                            <li>Public game rooms</li>
+                            <li>5 categories</li>
+                            <li>Monthly leaderboards</li>
+                            <li>Ad-supported</li>
+                        </ul>
+                        <a href="auth.html" class="btn btn-outline">Get Started</a>
+                    </div>
+                    <div class="pricing-card glass featured">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Pro</h3>
+                            <div class="pricing-price">$7</div>
+                            <p class="pricing-period">per month</p>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>Advanced Hebrew validation</li>
+                            <li>Private game rooms</li>
+                            <li>15+ categories</li>
+                            <li>Real-time stats & analytics</li>
+                            <li>Ad-free experience</li>
+                            <li>Custom themes</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <a href="auth.html" class="btn btn-primary">Start 14-Day Trial</a>
+                    </div>
+                    <div class="pricing-card glass">
+                        <div class="pricing-header">
+                            <h3 class="pricing-title">Enterprise</h3>
+                            <div class="pricing-price">Custom</div>
+                            <p class="pricing-period">tailored plan</p>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>Everything in Pro</li>
+                            <li>Dedicated servers</li>
+                            <li>White-label solution</li>
+                            <li>API access</li>
+                            <li>Custom categories</li>
+                            <li>SSO & advanced security</li>
+                            <li>Dedicated account manager</li>
+                        </ul>
+                        <a href="auth.html" class="btn btn-outline">Contact Sales</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <a href="#" class="logo">City<span>Country</span>Hebrew</a>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Support</a>
+                    <a href="#">Blog</a>
+                </div>
+                <p class="copyright">© 2026 CityCountryHebrew. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
